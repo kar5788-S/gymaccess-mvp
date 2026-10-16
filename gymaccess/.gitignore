@@ -1,0 +1,24 @@
+# Dependencias
+node_modules/
+
+# Entorno (secretos - constitución Principio V)
+.env
+.env.local
+.env.*.local
+
+# Builds
+dist/
+build/
+coverage/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Editor / SO
+.vscode/
+.idea/
+*.tmp
+*.swp
+.DS_Store
+Thumbs.db

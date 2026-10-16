@@ -1,0 +1,25 @@
+# Dependencias
+node_modules/
+
+# Variables de entorno y secretos
+**/.env
+**/.env.*
+!**/.env.example
+
+# Artefactos generados
+**/dist/
+**/build/
+**/coverage/
+*.log
+npm-debug.log*
+
+# Archivos temporales y del sistema operativo
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
