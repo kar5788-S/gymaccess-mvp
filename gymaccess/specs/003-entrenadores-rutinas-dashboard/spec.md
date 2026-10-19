@@ -76,27 +76,25 @@ y que el historial de la asignación anterior (si existía) se conserve.
 
 **Escenarios de aceptación**:
 
-1. **Dado** un cliente activo sin entrenador responsable y un entrenador
-   registrado, **Cuando** un administrador o recepcionista asigna el
-   entrenador al cliente, **Entonces** la asignación queda registrada con su
-   fecha y el entrenador pasa a tener al cliente en su carga.
-2. **Dado** un cliente con un entrenador responsable vigente, **Cuando** se le
-   asigna un entrenador diferente, **Entonces** la asignación anterior queda
-   cerrada con su fecha de fin, la nueva queda vigente y el sistema conserva
-   un solo entrenador principal activo por cliente.
-3. **Dado** un cliente inexistente o con estado inactivo, **Cuando** se intenta
-   asignarle un entrenador, **Entonces** el sistema rechaza la operación y no
-   registra la asignación.
-4. **Dado** un usuario sin perfil de entrenador, o un entrenador cuyo usuario
-   esté inactivo, **Cuando** se intenta usarlo en una asignación, **Entonces**
-   el sistema rechaza la operación.
-5. **Dado** un cliente con entrenador asignado, **Cuando** el administrador
-   consulta la ficha del cliente o la carga del entrenador, **Entonces** ambos
-   ven al entrenador responsable vigente y las asignaciones anteriores quedan
-   como historial.
-6. **Dado** una sesión de un rol sin permiso (entrenador o cliente), **Cuando**
-   intenta crear, modificar o cerrar asignaciones, **Entonces** el sistema
-   deniega la operación.
+1. **Event-driven**: CUANDO un administrador o recepcionista asigna un
+   entrenador registrado a un cliente activo sin responsable vigente, EL
+   SISTEMA DEBE registrar la fecha de asignación y agregar al cliente a la carga
+   del entrenador.
+2. **Event-driven**: CUANDO se asigna un entrenador diferente a un cliente con
+   una asignación vigente, EL SISTEMA DEBE cerrar la asignación anterior con su
+   fecha de fin, dejar vigente la nueva y conservar el historial sin más de un
+   entrenador principal activo.
+3. **Unwanted behavior**: SI se intenta asignar un entrenador a un cliente
+   inexistente o inactivo, ENTONCES EL SISTEMA DEBE rechazar la operación y no
+   registrar la asignación.
+4. **Unwanted behavior**: SI se intenta usar en una asignación un usuario sin
+   perfil de entrenador o cuyo usuario esté inactivo, ENTONCES EL SISTEMA DEBE
+   rechazar la operación.
+5. **Event-driven**: CUANDO el administrador consulta la ficha de un cliente o
+   la carga de un entrenador con asignaciones, EL SISTEMA DEBE mostrar al
+   responsable vigente y conservar las asignaciones anteriores como historial.
+6. **Unwanted behavior**: SI un entrenador o cliente intenta crear, modificar o
+   cerrar asignaciones, ENTONCES EL SISTEMA DEBE denegar la operación.
 
 ---
 
@@ -200,21 +198,21 @@ información.
 
 **Escenarios de aceptación**:
 
-1. **Dado** un cliente con una rutina activa, **Cuando** inicia sesión y abre
-   su rutina, **Entonces** ve el nombre del plan y sus ejercicios con series,
-   repeticiones o instrucciones.
-2. **Dado** un cliente con objetivos y progresos, **Cuando** consulta su
-   evolución, **Entonces** ve sus objetivos y el historial de sus avances en
-   orden de fecha.
-3. **Dado** un cliente sin rutina asignada, **Cuando** consulta su rutina,
-   **Entonces** ve un mensaje claro que indica que aún no tiene rutina, sin
+1. **Event-driven**: CUANDO un cliente inicia sesión y consulta una rutina
+   activa, EL SISTEMA DEBE mostrar el nombre del plan y sus ejercicios con
+   series, repeticiones o instrucciones.
+2. **Event-driven**: CUANDO un cliente consulta su evolución, EL SISTEMA DEBE
+   mostrar sus objetivos y el historial de sus avances en orden de fecha.
+3. **Event-driven**: CUANDO un cliente sin rutina asignada consulta su rutina,
+   EL SISTEMA DEBE mostrar un mensaje claro de que aún no tiene rutina, sin
    errores técnicos.
-4. **Dado** un cliente autenticado, **Cuando** intenta consultar la rutina o el
-   progreso de otro cliente (por ejemplo modificando el identificador de la
-   solicitud), **Entonces** el sistema no expone información ajena y responde
-   que no tiene permiso o que el recurso no existe.
-5. **Dado** un cliente con rutina archivada y una activa, **Cuando** consulta
-   su información, **Entonces** ve la rutina activa como su plan vigente.
+4. **Unwanted behavior**: SI un cliente autenticado intenta consultar la rutina
+   o el progreso de otro cliente, ENTONCES EL SISTEMA DEBE denegar la consulta
+   sin exponer información ajena e indicar que no tiene permiso o que el recurso
+   no existe.
+5. **Event-driven**: CUANDO un cliente con rutinas archivadas y una activa
+   consulta su información, EL SISTEMA DEBE mostrar la rutina activa como su
+   plan vigente.
 
 ---
 
@@ -238,28 +236,27 @@ denegación de acceso.
 
 **Escenarios de aceptación**:
 
-1. **Dado** una sesión de administrador, **Cuando** abre el dashboard,
-   **Entonces** ve indicadores de: clientes totales y activos, membresías
-   activas y vencidas, ingresos y pagos del periodo, accesos recientes
-   (autorizados y rechazados), entrenadores registrados, clientes con entrenador
-   asignado, clientes con rutina activa y objetivos cumplidos o en curso.
-2. **Dado** un administrador, **Cuando** selecciona un periodo (mes actual,
-   últimos 30 días o histórico), **Entonces** los indicadores correspondientes
-   se recalculan para ese periodo.
-3. **Dado** una sesión de un recepcionista o de un cliente, **Cuando**
-   intenta consultar el dashboard, **Entonces** el sistema deniega la
-   operación.
-4. **Dado** un gimnasio sin registros en algún indicador, **Cuando** se abre el
-   dashboard, **Entonces** los indicadores muestran cero o un mensaje vacío
-   claro, sin errores.
-5. **Dado** un administrador o un entrenador autenticado, **Cuando** consulta
-   el dashboard, **Entonces** los datos se presentan como cifras y resúmenes,
-   sin exponer información sensible detallada de clientes que el usuario no
-   tenga derecho a consultar.
-6. **Dado** una sesión de un entrenador, **Cuando** abre su panel de
-   indicadores, **Entonces** ve solo los de su carga (clientes asignados,
-   rutinas y progresos de sus clientes), sin ver ingresos, pagos ni otras
-   cifras financieras del gimnasio.
+1. **Event-driven**: CUANDO el administrador abre el dashboard, EL SISTEMA DEBE
+   mostrar indicadores de clientes totales y activos, membresías activas y
+   vencidas, ingresos y pagos del periodo, accesos recientes autorizados y
+   rechazados, entrenadores registrados, clientes con entrenador asignado,
+   clientes con rutina activa y objetivos cumplidos o en curso.
+2. **Event-driven**: CUANDO el administrador selecciona un periodo (mes actual,
+   últimos 30 días o histórico), EL SISTEMA DEBE recalcular los indicadores
+   correspondientes a ese periodo.
+3. **Unwanted behavior**: SI un recepcionista o cliente intenta consultar el
+   dashboard, ENTONCES EL SISTEMA DEBE denegar la operación.
+4. **Unwanted behavior**: SI no existen registros para un indicador del
+   dashboard, ENTONCES EL SISTEMA DEBE mostrar cero o un mensaje vacío claro,
+   sin producir errores.
+5. **Event-driven**: CUANDO un administrador o entrenador consulta el
+   dashboard, EL SISTEMA DEBE presentar los datos como cifras y resúmenes sin
+   exponer información sensible detallada de clientes que el usuario no tenga
+   derecho a consultar.
+6. **Event-driven**: CUANDO un entrenador abre su panel de indicadores, EL
+   SISTEMA DEBE limitarlo a su carga (clientes asignados, rutinas y progresos
+   de sus clientes) y no mostrar ingresos, pagos ni otras cifras financieras
+   del gimnasio.
 
 ---
 
@@ -277,17 +274,19 @@ conteos y relaciones correspondan a las asignaciones registradas.
 
 **Escenarios de aceptación**:
 
-1. **Dado** una sesión de administrador o recepcionista, **Cuando** consulta el
-   personal asignado, **Entonces** ve la lista de entrenadores con sus clientes
+1. **Event-driven**: CUANDO un administrador o recepcionista consulta el
+   personal asignado, EL SISTEMA DEBE mostrar los entrenadores, sus clientes
    vigentes y el conteo de carga de cada uno.
-2. **Dado** el listado de personal, **Cuando** el usuario selecciona a un
-   entrenador, **Entonces** ve los clientes de su carga con su estado.
-3. **Dado** un entrenador sin clientes asignados, **Cuando** se consulta el
-   listado, **Entonces** aparece con carga cero y un mensaje claro, sin error.
-4. **Dado** una sesión del propio entrenador, **Cuando** consulta su carga,
-   **Entonces** ve únicamente a sus clientes asignados.
-5. **Dado** una sesión de cliente, **Cuando** intenta consultar el personal
-   asignado, **Entonces** el sistema deniega la operación.
+2. **Event-driven**: CUANDO un usuario autorizado selecciona a un entrenador
+   del listado de personal, EL SISTEMA DEBE mostrar los clientes de su carga y
+   el estado de cada uno.
+3. **Event-driven**: CUANDO se consulta el listado y un entrenador no tiene
+   clientes asignados, EL SISTEMA DEBE mostrar una carga de cero y un mensaje
+   claro, sin error.
+4. **Event-driven**: CUANDO un entrenador consulta su carga, EL SISTEMA DEBE
+   mostrar únicamente a sus clientes asignados.
+5. **Unwanted behavior**: SI un cliente intenta consultar el personal asignado,
+   ENTONCES EL SISTEMA DEBE denegar la operación.
 
 ---
 

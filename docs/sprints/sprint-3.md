@@ -128,29 +128,64 @@ La tabla `auditoria` se utilizará de acuerdo con las reglas establecidas en `do
 
 ## 7. Criterios de aceptación
 
-### 7.1 Entrenadores y asignación
+Los criterios utilizan los patrones EARS **Event-driven** (`CUANDO ... EL
+SISTEMA DEBE ...`) y **Unwanted behavior** (`SI ... ENTONCES EL SISTEMA DEBE
+...`).
 
-* El administrador puede registrar entrenadores del gimnasio.
-* El entrenador queda asociado a un usuario válido del sistema.
-* El administrador o recepcionista puede asignar un entrenador a un cliente activo.
-* El sistema evita asignaciones a clientes inexistentes o usuarios con roles no permitidos.
-* El sistema permite consultar los clientes asignados a cada entrenador.
+### 7.1 Clientes y asignación
+
+* **Event-driven**: CUANDO el administrador o el recepcionista asigna un
+  entrenador a un cliente activo y a un entrenador válido, EL SISTEMA DEBE
+  registrar la asignación con su fecha y mostrar al cliente en la carga del
+  entrenador.
+* **Event-driven**: CUANDO se asigna un entrenador diferente a un cliente con
+  una asignación vigente, EL SISTEMA DEBE cerrar la asignación anterior con su
+  fecha de fin, conservarla como historial y dejar vigente únicamente la nueva.
+* **Event-driven**: CUANDO el administrador o el recepcionista consulta los
+  clientes asignados a un entrenador, EL SISTEMA DEBE mostrar su carga actual.
+* **Unwanted behavior**: SI se intenta asignar un entrenador a un cliente
+  inexistente o inactivo, ENTONCES EL SISTEMA DEBE rechazar la operación sin
+  registrar la asignación.
+* **Unwanted behavior**: SI se intenta asignar un usuario inexistente, inactivo
+  o sin perfil de entrenador válido, ENTONCES EL SISTEMA DEBE rechazar la
+  operación.
+* **Unwanted behavior**: SI un entrenador intenta gestionar un cliente que no
+  pertenece a su carga vigente, ENTONCES EL SISTEMA DEBE denegar la operación.
 
 ### 7.2 Rutinas y progreso
 
-* El entrenador puede crear rutinas personalizadas para clientes asignados.
-* La rutina incluye ejercicios, series, repeticiones o instrucciones específicas.
-* El entrenador puede registrar objetivos, avances y comentarios del cliente.
-* El cliente puede consultar su rutina y evolución.
-* El sistema conserva el historial de cambios para comparar progreso a lo largo del tiempo.
+* **Event-driven**: CUANDO un entrenador crea una rutina para un cliente de su
+  carga, EL SISTEMA DEBE guardar la rutina con al menos un ejercicio y asociarla
+  al cliente y al entrenador.
+* **Event-driven**: CUANDO un entrenador registra objetivos o progresos para un
+  cliente de su carga, EL SISTEMA DEBE conservarlos en el historial del cliente.
+* **Event-driven**: CUANDO un cliente consulta su rutina y evolución, EL SISTEMA
+  DEBE mostrar únicamente su rutina activa y sus propios objetivos y progresos.
+* **Unwanted behavior**: SI se intenta guardar una rutina sin nombre, sin
+  ejercicios o con valores inválidos, ENTONCES EL SISTEMA DEBE rechazarla e
+  indicar el dato incorrecto.
+* **Unwanted behavior**: SI un cliente intenta consultar la rutina o el progreso
+  de otro cliente, ENTONCES EL SISTEMA DEBE denegar la consulta sin exponer
+  información ajena.
+* **Event-driven**: CUANDO se modifica una rutina o un objetivo, EL SISTEMA
+  DEBE conservar los progresos previamente registrados.
 
-### 7.3 Dashboard administrativo
+### 7.3 Dashboard y accesos
 
-* El administrador puede consultar un dashboard con resumen de clientes activos y entrenadores.
-* El dashboard muestra indicadores clave del progreso general del gimnasio.
-* La información se presenta en formato claro y legible para toma de decisiones.
-* Los datos del dashboard respetan los permisos del usuario autenticado.
-* El dashboard no expone información sensible de clientes ajenos a la responsabilidad del usuario.
+* **Event-driven**: CUANDO el administrador consulta el dashboard, EL SISTEMA
+  DEBE mostrar el resumen de clientes activos, entrenadores e intentos de acceso
+  recientes autorizados y rechazados.
+* **Event-driven**: CUANDO el administrador selecciona un periodo para el
+  dashboard, EL SISTEMA DEBE recalcular los indicadores correspondientes,
+  incluidos los relacionados con accesos.
+* **Unwanted behavior**: SI el recepcionista o el cliente intenta consultar el
+  dashboard, ENTONCES EL SISTEMA DEBE denegar la consulta.
+* **Event-driven**: CUANDO un entrenador consulta su panel, EL SISTEMA DEBE
+  limitar los indicadores a su carga y no mostrar cifras financieras ni
+  información sensible de clientes que no esté autorizado a consultar.
+* **Unwanted behavior**: SI no existen registros para un indicador de clientes
+  o accesos, ENTONCES EL SISTEMA DEBE mostrar cero o un mensaje vacío claro, sin
+  producir un error.
 
 ## 8. Entregables esperados
 
